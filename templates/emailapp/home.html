@@ -1,0 +1,62 @@
+{% extends 'emailapp/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block emailapp %}
+<div style="max-width: 600px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
+
+    <h2 style="text-align: center; color: #4a90e2;">📧 Send an Email</h2>
+
+    {% if messages %}
+    <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+        {% for message in messages %}
+        {% if message.tags %}  {{ message }} {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'email' %}" style="display: flex; flex-direction: column; gap: 15px;">
+        {% csrf_token %}
+        <div>
+            {{ form.email|as_crispy_field }}
+        </div>
+        <div>
+            {{ form.subject|as_crispy_field }}
+        </div>
+        <div>
+            {{ form.message|as_crispy_field }}
+        </div>
+        <button type="submit" style="background: linear-gradient(135deg, #4a90e2, #357ae8); border: none; color: white; padding: 12px; font-size: 16px; border-radius: 8px; transition: 0.3s; cursor: pointer;">
+            📨 Send Email
+        </button>
+    </form>
+</div>
+
+<!-- Sent Emails Table -->
+<h3 style="text-align: center; margin-top: 30px; color: #333;">📜 Sent Emails</h3>
+<div style="max-width: 800px; margin: auto; background: white; border-radius: 10px; padding: 15px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #4a90e2; color: white;">
+                <th style="padding: 10px; text-align: center;">ID</th>
+                <th style="padding: 10px; text-align: center;">Recipient</th>
+                <th style="padding: 10px; text-align: center;">Subject</th>
+                <th style="padding: 10px; text-align: center;">Sent At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for email in mydata %}
+            <tr style="background: #f8f9fa; text-align: center;">
+                <td style="padding: 10px;">{{ email.id }}</td>
+                <td style="padding: 10px;">{{ email.email }}</td>
+                <td style="padding: 10px;">{{ email.subject }}</td>
+                <td style="padding: 10px;">{{ email.createdat }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="padding: 10px; text-align: center; color: gray;">No emails sent yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
